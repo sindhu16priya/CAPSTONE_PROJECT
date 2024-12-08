@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Exports Visualizations</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-box {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>World Exports Analysis - TRENDS from 1960 to 2022</h1>
+    <p style="text-align: center; font-style: italic; margin-top: 20px;">Here are the top 5 countries having the highest average export value,their TRENDS over the years.</p>
+    <div class="chart-container">
+        <div class="chart-box"><canvas id="fuelChart"></canvas></div>
+        <div class="chart-box"><canvas id="highTechChart"></canvas></div>
+        <div class="chart-box"><canvas id="goodsServicesChart"></canvas></div>
+        <div class="chart-box"><canvas id="energyImportsChart"></canvas></div>
+    </div>
+
+    <script>
+        function generateChart(ctxId, chartData, title) {
+            const ctx = document.getElementById(ctxId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.years, // X-axis
+                    datasets: chartData.datasets // Country data
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: title
+                        }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Year' } },
+                        y: { title: { display: true, text: 'Export Value (%)' } }
+                    }
+                }
+            });
+        }
+
+        // Prepare chart data
+        const fuelData = {{ fuel_exports | tojson }};
+        const highTechData = {{ high_tech_exports | tojson }};
+        const goodsServicesData = {{ goods_services_exports | tojson }};
+        const energyImportsData = {{ energy_imports | tojson }};
+
+        function processData(rawData) {
+            const years = [...new Set(rawData.map(item => item.year))]; // Extract unique years
+            const groupedByCountry = rawData.reduce((acc, item) => {
+                acc[item.country_name] = acc[item.country_name] || [];
+                acc[item.country_name].push(item.export_value);
+                return acc;
+            }, {});
+
+            const datasets = Object.keys(groupedByCountry).map(country => ({
+                label: country,
+                data: groupedByCountry[country],
+                fill: false,
+                borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16), // Random color
+                tension: 0.1
+            }));
+
+            return { years, datasets };
+        }
+
+        // Generate charts
+        generateChart('fuelChart', processData(fuelData), 'Fuel Exports');
+        generateChart('highTechChart', processData(highTechData), 'High Technology Exports');
+        generateChart('goodsServicesChart', processData(goodsServicesData), 'Goods & Services Exports');
+        generateChart('energyImportsChart', processData(energyImportsData), 'Energy Imports');
+    </script>
+    <div class="analysis-section">
+        <h2>Insights and Analysis</h2>
+        <ul>
+            <li>
+                <strong>Fuel Exports:</strong> Among the top 5 countries, <strong>Lao PDR</strong> exhibits a unique trend. It began exporting fuel in 1962, experienced fluctuations until 1974, and then observed a long hiatus. Fuel exports resumed in 2010, but no significant changes were observed thereafter.
+            </li>
+            <li>
+                <strong>High-Technology Exports:</strong> For high-technology exports, <strong>Panama</strong> stands out with significant fluctuations. There were no recorded high-tech exports during the 1900s or early 2000s. However, these exports gradually started emerging around 2007 and have shown notable activity since.
+            </li>
+            <li>
+                <strong>Goods & Services Exports:</strong> In the goods and services export category, <strong>Singapore</strong> demonstrates remarkable consistency from 1960 to 2022. In contrast, <strong>Virgin Islands</strong> began its journey in the early 2000s, experiencing fluctuations up until 2022.
+            </li>
+            <li>
+                <strong>Energy Imports:</strong> In energy imports, <strong>Singapore</strong> experienced a significant decline. It began importing energy in 1985, but by 2014, its energy imports had markedly decreased.
+            </li>
+        </ul>
+    </div>
+    
+</body>
+</html>

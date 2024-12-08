@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Value Comparison - Stacked Bar Charts</title>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+</head>
+<body>
+    <h1 style="text-align: center;">Export Value Comparison during MILESTONE YEARS - Top 7 Countries</h1>
+
+    <div>
+        <h2>Fuel Exports</h2>
+        <div id="fuelExportsBar" style="width: 80%; margin: auto;"></div>
+    </div>
+
+    <div>
+        <h2>High-Tech Exports</h2>
+        <div id="highTechExportsBar" style="width: 80%; margin: auto;"></div>
+    </div>
+
+    <div>
+        <h2>Goods & Services Exports</h2>
+        <div id="goodsServicesExportsBar" style="width: 80%; margin: auto;"></div>
+    </div>
+
+    <div>
+        <h2>Energy Imports</h2>
+        <div id="energyImportsBar" style="width: 80%; margin: auto;"></div>
+    </div>
+
+    <script>
+        // Function to create a bar chart for a given indicator
+        function createBarChart(data, divId, title) {
+            var countries = [...new Set(data.map(d => d.country_name))];
+            var years = [...new Set(data.map(d => d.year))];
+
+            var chartData = countries.map(country => {
+                return {
+                    x: years,
+                    y: years.map(year => {
+                        var value = data
+                            .filter(d => d.country_name === country && d.year === year)
+                            .reduce((sum, d) => sum + d.export_value, 0);
+                        return value;
+                    }),
+                    name: country,
+                    type: 'bar'
+                };
+            });
+
+            Plotly.newPlot(divId, chartData, {
+                title: title,
+                barmode: 'stack',
+                xaxis: { title: 'Year' },
+                yaxis: { title: 'Export Value (%)' }
+            });
+        }
+
+        // Data for Fuel Exports
+        var fuelData = {{ fuel_exports | tojson }};
+        createBarChart(fuelData, 'fuelExportsBar', 'Fuel Exports - Stacked Bar Chart');
+
+        // Data for High-Tech Exports
+        var highTechData = {{ high_tech_exports | tojson }};
+        createBarChart(highTechData, 'highTechExportsBar', 'High-Tech Exports - Stacked Bar Chart');
+
+        // Data for Goods & Services Exports
+        var goodsServicesData = {{ goods_services_exports | tojson }};
+        createBarChart(goodsServicesData, 'goodsServicesExportsBar', 'Goods & Services Exports - Stacked Bar Chart');
+
+        // Data for Energy Imports
+        var energyImportsData = {{ energy_imports | tojson }};
+        createBarChart(energyImportsData, 'energyImportsBar', 'Energy Imports - Stacked Bar Chart');
+    </script>
+
+    <section style="margin: 50px;">
+        <h2 style="text-align: center;">Analysis</h2>
+        <div style="text-align: justify; font-size: 1.1em;">
+            <p><strong>Fuel Exports:</strong> Kuwait is the only country that has been consistent in this category during every set of milestone years. It has maintained its position among the top 7 countries for average export values across milestone years.</p>
+            <p><strong>High-Tech Exports:</strong> Significant exports in this category started appearing only during the 2010 decade. Countries such as Malta, Malaysia, Hong Kong, and Singapore have been consistent during both the 2010 and 2020 milestone years.</p>
+            <p><strong>Goods & Services Exports:</strong> Singapore has shown remarkable consistency in this field, covering every milestone year. Countries like Malta, Luxembourg, and Hong Kong SAR - China have also been consistent from 1970 to 2020, covering all milestone years.</p>
+            <p><strong>Energy Imports:</strong> Luxembourg has been a consistent player in this category from the 1960s to the 2010s. Other countries, such as Cyprus, Singapore, Hong Kong SAR - China, Malta, Curacao, and Gibraltar, entered this field during the 1980s and have been consistent since.</p>
+        </div>
+    </section>
+</body>
+</html>
+
+

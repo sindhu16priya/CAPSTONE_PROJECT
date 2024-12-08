@@ -1,0 +1,99 @@
+<!DOCTYPE html> 
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Visualization 3 - Export Data by Income Group</title>
+        <style>
+            body {
+                font-family: 'Times New Roman', Times, serif;
+                text-align: left;
+            }
+
+            h1 {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                display: inline-block;
+                width: 45%;
+                margin: 20px;
+                vertical-align: top;
+            }
+
+            .chart-container p {
+                font-size: 14px;
+                margin-top: 10px;
+            }
+
+            .chart {
+                width: 70%; /* Resize chart to be smaller */
+                height: 300px;
+            }
+
+            .analysis {
+                margin-top: 40px;
+            }
+
+            .analysis h2 {
+                font-size: 24px;
+                text-decoration: underline;
+                margin-bottom: 15px;
+            }
+
+            .analysis p {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
+<body>
+    <h1>Export Data by Income Group</h1>
+
+    <h2>Fuel Exports</h2>
+    <p style="text-align: center; font-style: italic; margin-top: 20px;">The pie chart below shows the distribution of fuel exports by income group.</p>
+    <div>
+        {{ pie_fuel_html|safe }}
+    </div>
+
+    <h2>Exports of Goods and Services</h2>
+    <p style="text-align: center; font-style: italic; margin-top: 20px;">The pie chart below shows the distribution of exports of goods and services by income group.</p>
+    <div>
+        {{ pie_goods_html|safe }}
+    </div>
+
+    <h2>Energy Imports</h2>
+    <p style="text-align: center; font-style: italic; margin-top: 20px;">The pie chart below shows the distribution of energy imports by income group.</p>
+    <div>
+        {{ pie_energy_html|safe }}
+    </div>
+
+    <h2>High-tech Exports</h2>
+    <p style="text-align: center; font-style: italic; margin-top: 20px;">The pie chart below shows the distribution of high-tech exports by income group.</p>
+    <div>
+        {{ pie_hightech_html|safe }}
+    </div>
+
+    <div class="analysis">
+        <h2>Analysis</h2>
+        <p>The above pie charts depict the average export data for each of the export categories across different income groups. Below are the key observations:</p>
+
+        <p><strong>1. Fuel Exports:</strong> The highest contribution comes from the lower-middle-income group (31.2%). There is not much difference between the high-income group (26.1%) and the upper-middle-income group (27.3%), both of which also dominate fuel exports.</p>
+
+        <p><strong>2. Exports of Goods and Services:</strong> The high-income group leads with 39.6%. There is a slight difference between the lower-middle-income group (21.8%) and the upper-middle-income group (24.9%).</p>
+
+        <p><strong>3. Energy Imports:</strong> Significant differences are observed among the four income groups. The high-income group leads with 39%, followed by the upper-middle-income group (29.8%) and the lower-middle-income group (29.3%). The low-income group contributes the least, with only 10.9%.</p>
+
+        <p><strong>4. High-tech Exports:</strong> This category is predominantly dominated by the high-income group (53.4%), followed by the upper-middle-income group (20.4%). The lower-middle-income and low-income groups have similar contributions, at 13.1% each.</p>
+    </div>
+</body>
+</html>
+

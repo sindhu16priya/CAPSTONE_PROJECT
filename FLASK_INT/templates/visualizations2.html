@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Best and Worst Exports</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas {
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            width: 50%; /* Reducing the width to make the chart smaller */
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .note-container {
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Best and Worst Exports Analysis</h1>
+      <!-- Analysis Description -->
+    <p style="text-align: center; font-style: italic; margin-top: 20px;">
+        The below visualizations represents the best and worst exports the countries have experienced. Only the top 5 countries with the highest best export values are depicted for each category.
+    </p>
+    
+    <!-- Fuel Exports Chart -->
+    <div class="chart-container">
+        <h2>Fuel Exports (% of Merchandise Exports)</h2>
+        <canvas id="fuelChart"></canvas>
+    </div>
+    
+    <!-- Note for Fuel Exports -->
+    <div class="note-container">
+        <h3>Top 5 Fuel Export Countries (Best and Worst)</h3>
+        <ul>
+            {% for row in fuel_exports %}
+                <li><strong>{{ row.country_name }}:</strong> Best: {{ row.best_export_value }}%, Worst: {{ row.worst_export_value }}%</li>
+            {% endfor %}
+        </ul>
+        <p><strong>Note:</strong> For the Fuel Exports chart, I have excluded 'Other small states' and 'Small states' from positions 3 and 4 as they are not considered countries.</p>
+    </div>
+    
+    <!-- High-Tech Exports Chart -->
+    <div class="chart-container">
+        <h2>High-Technology Exports (% of Manufactured Exports)</h2>
+        <canvas id="highTechChart"></canvas>
+    </div>
+    
+    <!-- Note for High-Tech Exports -->
+    <div class="note-container">
+        <h3>Top 5 High-Tech Export Countries (Best and Worst)</h3>
+        <ul>
+            {% for row in high_tech_exports %}
+                <li><strong>{{ row.country_name }}:</strong> Best: {{ row.best_export_value }}%, Worst: {{ row.worst_export_value }}%</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- Goods and Services Exports Chart -->
+    <div class="chart-container">
+        <h2>Exports of Goods and Services (% of GDP)</h2>
+        <canvas id="goodsChart"></canvas>
+    </div>
+    
+    <!-- Note for Goods and Services Exports -->
+    <div class="note-container">
+        <h3>Top 5 Goods and Services Export Countries (Best and Worst)</h3>
+        <ul>
+            {% for row in goods_services_exports %}
+                <li><strong>{{ row.country_name }}:</strong> Best: {{ row.best_export_value }}%, Worst: {{ row.worst_export_value }}%</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <!-- Energy Imports Chart -->
+    <div class="chart-container">
+        <h2>Energy Imports, Net (% of Energy Use)</h2>
+        <canvas id="energyChart"></canvas>
+    </div>
+    
+    <!-- Note for Energy Imports -->
+    <div class="note-container">
+        <h3>Top 5 Energy Import Countries (Best and Worst)</h3>
+        <ul>
+            {% for row in energy_imports %}
+                <li><strong>{{ row.country_name }}:</strong> Best: {{ row.best_export_value }}%, Worst: {{ row.worst_export_value }}%</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        // Helper function to create charts
+        function createChart(chartId, labels, bestData, worstData, label) {
+            const ctx = document.getElementById(chartId).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Best Export Value',
+                            data: bestData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Worst Export Value',
+                            data: worstData,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: label
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Data for Fuel Exports
+        createChart(
+            "fuelChart",
+            {{ fuel_exports|map(attribute='country_name')|list|tojson }},
+            {{ fuel_exports|map(attribute='best_export_value')|list|tojson }},
+            {{ fuel_exports|map(attribute='worst_export_value')|list|tojson }},
+            "Fuel Exports"
+        );
+
+        // Data for High-Tech Exports
+        createChart(
+            "highTechChart",
+            {{ high_tech_exports|map(attribute='country_name')|list|tojson }},
+            {{ high_tech_exports|map(attribute='best_export_value')|list|tojson }},
+            {{ high_tech_exports|map(attribute='worst_export_value')|list|tojson }},
+            "High-Technology Exports"
+        );
+
+        // Data for Goods and Services Exports
+        createChart(
+            "goodsChart",
+            {{ goods_services_exports|map(attribute='country_name')|list|tojson }},
+            {{ goods_services_exports|map(attribute='best_export_value')|list|tojson }},
+            {{ goods_services_exports|map(attribute='worst_export_value')|list|tojson }},
+            "Exports of Goods and Services"
+        );
+
+        // Data for Energy Imports
+        createChart(
+            "energyChart",
+            {{ energy_imports|map(attribute='country_name')|list|tojson }},
+            {{ energy_imports|map(attribute='best_export_value')|list|tojson }},
+            {{ energy_imports|map(attribute='worst_export_value')|list|tojson }},
+            "Energy Imports"
+        );
+    </script>
+</body>
+</html>
